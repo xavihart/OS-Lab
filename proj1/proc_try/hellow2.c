@@ -4,8 +4,9 @@
 #include <linux/proc_fs.h>
 #include <linux/uaccess.h>   // different from <asm/uaccess.h> in the COS book 
 #include <linux/jiffies.h>
+#include  <linux/param.h>
 #define BUFFER_SIZE 128
-#define PROC_NAME "jiffies"
+#define PROC_NAME "seconds"
 
 ssize_t proc_read(struct file *file, char __user *usr_buf, size_t count, loff_t *pos);
 
@@ -36,15 +37,10 @@ ssize_t proc_read(struct file *file, char __user *usr_buf, size_t count, loff_t 
        return 0;
     }
     completed = 1;
-    rv = sprintf(buffer, "jiffies:%ld\n", jiffies);
+    rv = sprintf(buffer, "seconds:%ld\n", jiffies / HZ);
     copy_to_user(usr_buf, buffer, rv);
     return rv;
 }
-
-
-
-
-
 
 
 module_init(proc_init);
@@ -52,10 +48,5 @@ module_exit(proc_exit);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Hello Module");
 MODULE_AUTHOR("SGG");
-
-
-
-
-
 
 
