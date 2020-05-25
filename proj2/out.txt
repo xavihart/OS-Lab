@@ -1,0 +1,8 @@
+not use pipe
+a.out
+in.txt
+less
+out.txt
+shell
+shell2
+shell.c
