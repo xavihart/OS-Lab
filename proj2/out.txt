@@ -1,5 +1,9 @@
-  PID TTY          TIME CMD
-17901 pts/4    00:00:00 bash
-22808 pts/4    00:00:00 fhy
-23916 pts/4    00:00:00 shell
-23922 pts/4    00:00:00 ps
+a.out
+in.txt
+less
+out.txt
+pid
+proc_pid.c
+shell
+shell2
+shell.c
