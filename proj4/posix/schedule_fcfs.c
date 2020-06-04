@@ -42,7 +42,7 @@ Perf* schedule(){
     struct node*now = head;
 
     while(now){
-       traverse(head);
+       //traverse(head);
         if(now -> task -> start == 0){
             results -> AveResponseTime += time;
             results -> AveWaitingTime += (time - now -> task -> ltime);
