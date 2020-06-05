@@ -26,9 +26,9 @@ int main(int argc, char *argv[]){
     // program inputs
 
     assert(argc == 5);
-     printf("Banker>>\n");
+     //printf("Banker>>\n");
 	for (int i = 0; i < NUM_RES;++i){
-        printf("%d\n", i);
+        //printf("%d\n", i);
 	    available[i] = atoi(argv[i + 1]);
     }
     
@@ -63,19 +63,15 @@ int main(int argc, char *argv[]){
         }
         scanf("%d %d %d %d %d", &cosID, &reqlist[0], &reqlist[1], &reqlist[2], &reqlist[3]);
         if(strcmp(command, "RQ") == 0){
-
+             request(cosID, reqlist);
         }
         else if(strcmp(command, "RL") == 0){
-
+             release(cosID, reqlist);
         }
         else{
             printf("Wrong input(only RQ,RL,* are acceptable)\n");
         }
     }
-
-
-
-
 
     return 0;
 }
@@ -94,8 +90,33 @@ int request(int ID, int REQ[]){
     }
 
     // make a copy of the mat and check if they are in safe state
-    /*to do*/
-    
+    int avail_cp[NUM_RES];
+    int need_cp[NUM_CONS][NUM_RES];
+    int alloc_cp[NUM_CONS][NUM_RES];
+    for(int i = 0;i < NUM_CONS;++i)
+        for(int j = 0;j < NUM_RES;++j){
+            need_cp[i][j] = need[i][j];
+            alloc_cp[i][j] = allocation[i][j];
+        }
+
+    for(int i = 0;i < NUM_RES;++i){
+        avail_cp[i] = available[i] - REQ[i];
+        need_cp[ID][i] = need[ID][i] - REQ[i];
+        alloc_cp[ID][i] = allocation[ID][i] + REQ[i];
+    }
+
+    int f;
+    f = check(alloc_cp, need_cp, avail_cp);
+    if(f == 0){
+        printf("Request permitted!\n");
+        for(int i = 0;i < NUM_RES;++i){
+            available[i] -= REQ[i];
+            need[ID][i] -= REQ[i];
+            allocation[ID][i] += REQ[i];
+        }
+    }else{
+        printf("Requset unsafe!\n");
+    }
     
 }
 int release(int ID, int REQ[]){
@@ -122,10 +143,11 @@ int check(int Alloc[][NUM_RES], int Need[][NUM_RES], int avail[]){
     // return 0 if safe, else -1
     int alldone;
     int solveone = 0;
-    int done[NUM_CONS] = {0};
+    int done[NUM_CONS] = {0,0,0,0,0};
     while(1){
         alldone = 1;
         solveone = 0;
+
         for(int i = 0;i < NUM_CONS;++i){
             if(done[i] == 1){
                 continue;
@@ -134,12 +156,14 @@ int check(int Alloc[][NUM_RES], int Need[][NUM_RES], int avail[]){
                 int f = 0;
                 for(int j = 0;j < NUM_RES;++j){
                     if(avail[j] < Need[i][j]){
+                        //printf("%d ",  Need[i][j]);
                         f = 1;
                         break;
                     }
                 }
                 if(!f){
                     solveone = 1;
+                    //printf("solve %d\n", i);
                     for(int j = 0;j < NUM_RES;++j){
                         done[i] = 1;
                         avail[j] += Alloc[i][j];
@@ -166,6 +190,7 @@ void init(){
 }
 
 void show_mat(){
+    printf("\n");
     printf("------Maximum Mat------\n");
     printf("   R1 R2 R3 R4\n");
     for(int i = 0;i < NUM_CONS;++i){
